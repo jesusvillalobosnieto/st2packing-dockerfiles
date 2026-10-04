@@ -200,7 +200,9 @@ configure_testing_system()
             # install doc files (/usr/share/docs) when installing yum packages
             # otherwise /usr/share/docs/st2/conf/nginx/st2.conf won't be present
             # https://github.com/docker-library/docs/tree/master/centos#package-documentation
-            sed -i '/nodocs/d' /etc/yum.conf
+            # /etc/yum.conf is a symlink to /etc/dnf/dnf.conf; sed -i would replace the
+            # symlink with a copy and leave dnf.conf unchanged, so edit dnf.conf itself.
+            sed -i '/nodocs/d' /etc/dnf/dnf.conf
         ;;
         rhel*)
             cd /lib/systemd/system/sysinit.target.wants/
@@ -261,10 +263,13 @@ install_system_tools()
             dnf -y autoremove; dnf clean all
         ;;
         ubuntu*)
+            # uuid-runtime provides uuidgen, which is part of util-linux on EL
+            # and is used by the st2tests suite (st2-self-check).
             PKGS=(
                 git
                 openssh-server
                 sudo
+                uuid-runtime
             )
             apt -y install ${PKGS[@]}
         ;;
