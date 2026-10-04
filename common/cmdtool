@@ -58,9 +58,10 @@ configure_base()
         ;;
         rhel*)
             # Red Hat UBI images are only used as test nodes; EPEL, CRB and
-            # ImageMagick are only needed on the build nodes.
+            # ImageMagick are only needed on the build nodes. hostname is part of
+            # the Rocky Linux base image but not of UBI.
             dnf update -y
-            dnf -y install glibc-langpack-en
+            dnf -y install glibc-langpack-en hostname
             dnf clean all
         ;;
         ubuntu*)
@@ -214,6 +215,10 @@ configure_testing_system()
             # UBI sets tsflags=nodocs in /etc/dnf/dnf.conf (/etc/yum.conf is a symlink to it),
             # which would drop /usr/share/doc/st2/conf/nginx/st2.conf from the st2 package.
             sed -i '/nodocs/d' /etc/dnf/dnf.conf
+
+            # systemd services get the system locale from /etc/locale.conf, which is
+            # C.utf8 on UBI; use the same UTF-8 locale as the image environment.
+            echo 'LANG=en_US.UTF-8' > /etc/locale.conf
         ;;
         ubuntu*)
             # TO DO: This may be a pre-systemd relica.
