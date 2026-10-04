@@ -8,6 +8,7 @@ In these containers built artifacts are tested: StackStorm packages are installe
 [`Dockerfiles` sources](https://github.com/StackStorm/st2packaging-dockerfiles/blob/master/packagingtest):
 - Rocky Linux 8
 - Rocky Linux 9
+- RHEL 9 and RHEL 10 (Red Hat UBI `ubi-init`)
 - Ubuntu Focal
 - Ubuntu Jammy
 
